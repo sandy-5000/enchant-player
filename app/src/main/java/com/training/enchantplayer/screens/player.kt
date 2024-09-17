@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
+import androidx.compose.material.icons.automirrored.outlined.Segment
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
 import androidx.compose.material.icons.outlined.Equalizer
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -201,6 +202,10 @@ fun SongOptions() {
                 icon = Icons.Outlined.Shuffle,
                 description = "Shuffle",
             ),
+            NavIcon(
+                icon = Icons.AutoMirrored.Outlined.Segment,
+                description = "No Shuffle",
+            ),
         ),
     )
 
@@ -243,7 +248,9 @@ fun SongOptions() {
             endIconsState.forEachIndexed { index, itemIndex ->
                 IconButton(
                     onClick = {
-                        endIconsState[index] = (endIconsState[index] + 1) % endIcons[index].size
+                        endIconsState = endIconsState.clone().apply {
+                            this[index] = (this[index] + 1) % endIcons[index].size
+                        }
                     },
                     modifier = Modifier
                         .height(24.dp)
