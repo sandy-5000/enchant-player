@@ -1,4 +1,4 @@
-package com.training.enchantplayer.utils
+package com.training.enchantplayer.utils.types
 
 import android.annotation.SuppressLint
 
