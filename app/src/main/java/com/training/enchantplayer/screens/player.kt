@@ -18,15 +18,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
+import androidx.compose.material.icons.automirrored.outlined.PlaylistAddCheck
 import androidx.compose.material.icons.automirrored.outlined.Segment
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Equalizer
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Headset
 import androidx.compose.material.icons.outlined.PauseCircleOutline
 import androidx.compose.material.icons.outlined.Pending
 import androidx.compose.material.icons.outlined.PlayCircle
-import androidx.compose.material.icons.outlined.PlayCircleFilled
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.RepeatOne
 import androidx.compose.material.icons.outlined.Shuffle
@@ -82,7 +84,7 @@ fun Player(modifier: Modifier) {
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.PlayCircleFilled,
+                    imageVector = Icons.Outlined.Headset,
                     contentDescription = "Play",
                     modifier = Modifier.size(240.dp),
                     tint = appBackground,
@@ -168,21 +170,37 @@ fun SongOptions() {
     val shuffleOptionsGap = 4.dp
 
     val startIcons = arrayOf(
-        NavIcon(
-            icon = Icons.Outlined.FavoriteBorder,
-            description = "Favorite",
+        arrayOf(
+            NavIcon(
+                icon = Icons.Outlined.FavoriteBorder,
+                description = "Favorite",
+            ),
+            NavIcon(
+                icon = Icons.Filled.Favorite,
+                description = "Favorite",
+            ),
         ),
-        NavIcon(
-            icon = Icons.Outlined.ErrorOutline,
-            description = "About",
+        arrayOf(
+            NavIcon(
+                icon = Icons.Outlined.ErrorOutline,
+                description = "About",
+            ),
         ),
-        NavIcon(
-            icon = Icons.AutoMirrored.Outlined.PlaylistAdd,
-            description = "Add to queue",
+        arrayOf(
+            NavIcon(
+                icon = Icons.AutoMirrored.Outlined.PlaylistAdd,
+                description = "Add to queue",
+            ),
+            NavIcon(
+                icon = Icons.AutoMirrored.Outlined.PlaylistAddCheck,
+                description = "Add to queue",
+            ),
         ),
-        NavIcon(
-            icon = Icons.Outlined.Pending,
-            description = "Options",
+        arrayOf(
+            NavIcon(
+                icon = Icons.Outlined.Pending,
+                description = "Options",
+            ),
         ),
     )
 
@@ -209,6 +227,9 @@ fun SongOptions() {
         ),
     )
 
+    var startIconsState by remember {
+        mutableStateOf(IntArray(startIcons.size) { 0 })
+    }
     var endIconsState by remember {
         mutableStateOf(IntArray(endIcons.size) { 0 })
     }
@@ -223,21 +244,30 @@ fun SongOptions() {
             modifier = Modifier
                 .padding(top = 20.dp),
         ) {
-            startIcons.forEach { item ->
-                IconButton(
-                    onClick = { /*TODO*/ },
+            startIcons.forEachIndexed { index, item ->
+                Box(
                     modifier = Modifier
                         .height(24.dp)
                         .width(optionsGap + 24.dp + optionsGap)
                 ) {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = item.description,
+                    IconButton(
+                        onClick = {
+                            startIconsState = startIconsState.clone().apply {
+                                this[index] = (this[index] + 1) % item.size
+                            }
+                        },
                         modifier = Modifier
                             .padding(start = optionsGap, end = optionsGap)
-                            .fillMaxHeight(),
-                        tint = Color.White,
-                    )
+                            .fillMaxSize()
+                    ) {
+                        Icon(
+                            imageVector = item[startIconsState[index]].icon,
+                            contentDescription = item[startIconsState[index]].description,
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            tint = Color.White,
+                        )
+                    }
                 }
             }
         }
@@ -246,24 +276,29 @@ fun SongOptions() {
                 .padding(top = 20.dp)
         ) {
             endIconsState.forEachIndexed { index, itemIndex ->
-                IconButton(
-                    onClick = {
-                        endIconsState = endIconsState.clone().apply {
-                            this[index] = (this[index] + 1) % endIcons[index].size
-                        }
-                    },
+                Box(
                     modifier = Modifier
                         .height(24.dp)
                         .width(shuffleOptionsGap + 24.dp + shuffleOptionsGap)
                 ) {
-                    Icon(
-                        imageVector = endIcons[index][itemIndex].icon,
-                        contentDescription = endIcons[index][itemIndex].description,
+                    IconButton(
+                        onClick = {
+                            endIconsState = endIconsState.clone().apply {
+                                this[index] = (this[index] + 1) % endIcons[index].size
+                            }
+                        },
                         modifier = Modifier
                             .padding(start = shuffleOptionsGap, end = shuffleOptionsGap)
-                            .fillMaxHeight(),
-                        tint = Color.White,
-                    )
+                            .fillMaxSize()
+                    ) {
+                        Icon(
+                            imageVector = endIcons[index][itemIndex].icon,
+                            contentDescription = endIcons[index][itemIndex].description,
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            tint = Color.White,
+                        )
+                    }
                 }
             }
         }
